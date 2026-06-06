@@ -25,17 +25,14 @@ services:
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
     networks:
       - kafka-net
-    logging: &default-logging
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-
-    deploy: &default-deploy
+    extends:
+      file: docker-compose.base.yml
+      service: base
+    deploy:
       resources:
         limits:
-          memory: 1g
-          cpus: "1.0"
+          memory: 2g
+          cpus: "2.0"
 
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.2
@@ -49,9 +46,9 @@ services:
       - kafka
     networks:
       - kafka-net
-    logging: *default-logging
-
-    deploy: *default-deploy
+    extends:
+      file: docker-compose.base.yml
+      service: base
 
 volumes:
   kafka_data:
