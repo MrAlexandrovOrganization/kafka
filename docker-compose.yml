@@ -25,13 +25,13 @@ services:
       - KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1
     networks:
       - kafka-net
-    logging:
+    logging: &default-logging
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
 
-    deploy:
+    deploy: &default-deploy
       resources:
         limits:
           memory: 1g
@@ -49,17 +49,9 @@ services:
       - kafka
     networks:
       - kafka-net
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
+    logging: *default-logging
 
-    deploy:
-      resources:
-        limits:
-          memory: 1g
-          cpus: "1.0"
+    deploy: *default-deploy
 
 volumes:
   kafka_data:
