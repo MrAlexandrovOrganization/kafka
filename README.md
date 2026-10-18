@@ -1,4 +1,4 @@
-# infra__kafka
+# kafka
 
 ## Структура Compose
 
