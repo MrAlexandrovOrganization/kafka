@@ -43,3 +43,7 @@ forward-up:
 forward-check:
 	$(DOCKER_COMPOSE_BASE) --env-file /dev/null -p notes-infra-forwarder -f compose/forwarder.yml config --quiet --no-env-resolution
 check: forward-check
+
+.PHONY: ci-deploy
+ci-deploy:
+	python3 scripts/ci-deploy.py
