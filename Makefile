@@ -35,3 +35,11 @@ config-check:
 	$(DOCKER_COMPOSE) --env-file /dev/null config --quiet --no-env-resolution
 
 check: config-check
+
+.PHONY: forward-up forward-check
+forward-up:
+	@test -e .retired || { echo 'Forwarder is only for the retired VM' >&2; exit 1; }
+	$(DOCKER_COMPOSE_BASE) -p notes-infra-forwarder -f compose/forwarder.yml up -d --wait
+forward-check:
+	$(DOCKER_COMPOSE_BASE) --env-file /dev/null -p notes-infra-forwarder -f compose/forwarder.yml config --quiet --no-env-resolution
+check: forward-check

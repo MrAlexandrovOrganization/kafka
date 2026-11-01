@@ -5,3 +5,6 @@ export $(VERSION_VARS)
 
 KAFKA_IMAGE ?= confluentinc/cp-kafka:$(KAFKA_VERSION)
 export KAFKA_IMAGE
+
+FORWARDER_IMAGE := haproxy@sha256:5893840576071e6217cd52ebdcc14f454c6f7a631056fa6f4e0f40d3cac4215b
+export FORWARDER_IMAGE

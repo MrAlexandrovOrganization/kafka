@@ -1,0 +1,38 @@
+# Compatibility for clients that have not yet left the retired VM.
+services:
+  legacy-forwarder:
+    container_name: notes-infra-forwarder
+    image: ${FORWARDER_IMAGE:?Run via make}
+    restart: unless-stopped
+    volumes:
+      - ./migration/forwarder.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    ports:
+      - "127.0.0.1:16686:16686"
+    networks:
+      kafka-net:
+        aliases: [kafka]
+      redis-net:
+        aliases: [redis]
+      location-api-net:
+        aliases: [location]
+      jaeger-net:
+        aliases: [jaeger]
+    deploy:
+      resources:
+        limits:
+          memory: 64m
+          cpus: "0.25"
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+networks:
+  kafka-net:
+    external: true
+  redis-net:
+    external: true
+  location-api-net:
+    external: true
+  jaeger-net:
+    external: true
