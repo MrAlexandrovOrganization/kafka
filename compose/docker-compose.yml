@@ -8,11 +8,14 @@ services:
   kafka:
     container_name: "${CONTAINER_NAME_PREFIX:-}kafka"
     hostname: kafka
-    image: confluentinc/cp-kafka:8.2.0
+    ports:
+      - "127.0.0.1:9092:9092"
+    image: ${KAFKA_IMAGE:?Run via make}
     restart: unless-stopped
     volumes:
       - kafka_data:/var/lib/kafka/data
     environment:
+      - KAFKA_HEAP_OPTS=-Xms256m -Xmx512m
       - CLUSTER_ID=MkU3OEVBNTcwNTJENDM2Qk
       - KAFKA_NODE_ID=1
       - KAFKA_PROCESS_ROLES=broker,controller
@@ -37,8 +40,9 @@ services:
           cpus: "2.0"
 
   kafka-ui:
+    profiles: [tools]
     container_name: "${CONTAINER_NAME_PREFIX:-}kafka-ui"
-    image: provectuslabs/kafka-ui:v0.7.2
+    image: provectuslabs/kafka-ui:${KAFKA_UI_VERSION:?Run via make}
     restart: unless-stopped
     ports:
       - "127.0.0.1:8080:8080"
