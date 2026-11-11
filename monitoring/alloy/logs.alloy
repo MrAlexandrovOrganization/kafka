@@ -31,3 +31,16 @@ stage.match {
 		template = `{{ if and (eq .Value "INFO") .routine_election }}debug{{ else }}{{ .Value }}{{ end }}`
 	}
 }
+
+stage.match {
+	selector = `{service="kafka/kafka"}`
+	// This exact metadata retention continuation has no separate severity prefix.
+	stage.regex {
+		expression = `^(?P<routine_metadata_retention>retention \([0-9]+\) \(kafka\.raft\.KafkaMetadataLog\))$`
+	}
+
+	stage.template {
+		source   = "text_level"
+		template = `{{ if .routine_metadata_retention }}info{{ else }}{{ .Value }}{{ end }}`
+	}
+}
