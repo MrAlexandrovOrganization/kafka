@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "service": "kafka",
+  "components": [
+    "kafka/*"
+  ],
+  "logs": [
+    {
+      "file": "monitoring/alloy/logs.alloy",
+      "phase": "parse",
+      "order": 40
+    }
+  ],
+  "assets": []
+}

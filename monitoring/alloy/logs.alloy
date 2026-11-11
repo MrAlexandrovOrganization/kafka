@@ -1,0 +1,33 @@
+stage.match {
+	selector = `{service="kafka/kafka-ui"}`
+
+	stage.regex {
+		expression = `^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}\s+(?P<text_level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\s+\[`
+	}
+}
+
+stage.match {
+	selector = `{service="kafka/kafka"}`
+
+	stage.regex {
+		expression = `^\[[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}\]\s+(?P<text_level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL)\s+`
+	}
+
+	stage.regex {
+		expression = `^\[[^]]+\] INFO \[QuorumController id=[0-9]+\] (?P<routine_controller_stats>In the last [0-9]+ ms period, [0-9]+ controller events were completed, .* \(org\.apache\.kafka\.controller\.EventPerformanceMonitor\))$`
+	}
+
+	stage.template {
+		source   = "text_level"
+		template = `{{ if and (eq .Value "INFO") .routine_controller_stats }}debug{{ else }}{{ .Value }}{{ end }}`
+	}
+
+	stage.regex {
+		expression = `^\[[^]]+\] INFO \[QuorumController id=[0-9]+\] (?P<routine_election>Periodic task (electUnclean|electPreferred) generated 0 records in [0-9]+ microseconds\. \(org\.apache\.kafka\.controller\.PeriodicTaskControlManager\))\s*$`
+	}
+
+	stage.template {
+		source   = "text_level"
+		template = `{{ if and (eq .Value "INFO") .routine_election }}debug{{ else }}{{ .Value }}{{ end }}`
+	}
+}
